@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Generador de Tablas de Operaciones</title>
+</head>
+<body>
+  <h1>Generador de Tablas de Operaciones</h1>
+  <form action="/generar" method="get">
+    <label for="operacion">Operación:</label>
+    <select name="operacion" id="operacion">
+      <option value="suma">Suma</option>
+      <option value="resta">Resta</option>
+      <option value="multiplicacion">Multiplicación</option>
+      <option value="division">División</option>
+    </select>
+    <br><br>
+    <label for="numero">Número:</label>
+    <input type="number" name="numero" id="numero" step="any" required>
+    <br><br>
+    <label for="inicio">Inicio:</label>
+    <input type="number" name="inicio" id="inicio" required>
+    <br><br>
+    <label for="fin">Fin:</label>
+    <input type="number" name="fin" id="fin" required>
+    <br><br>
+    <button type="submit">Generar Tabla</button>
+  </form>
+</body>
+</html>
