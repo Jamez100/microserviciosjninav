@@ -1,19 +1,33 @@
 version: '3.8'
+
 services:
-  app:
+  auth-service:
     build: .
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     depends_on:
-      - mongo
+      - mysql
+    networks:
+      - auth-network
+
+  mysql:
+    image: mysql:8.0
     environment:
-      - MONGO_URI=mongodb://mongo:27017/libro_db
-  mongo:
-    image: mongo:latest
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: auth_user
+      MYSQL_PASSWORD: auth_password
     ports:
-      - "27017:27017"
+      - "3306:3306"
     volumes:
-      - mongo-data:/data/db
+      - mysql-data:/var/lib/mysql
+    networks:
+      - auth-network
+
+networks:
+  auth-network:
 
 volumes:
-  mongo-data: 
+  mysql-data:

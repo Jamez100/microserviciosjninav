@@ -1,0 +1,92 @@
+version: '3.9'
+
+services:
+  # Microservicio de Autenticación (C#)
+  auth-service:
+    build: ./mservicio_usuarios
+    ports:
+      - "5000:8080"
+    environment:
+      - DB_HOST=db_auth
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=auth_db
+    depends_on:
+      db_auth:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # Base de datos para Autenticación (MySQL)
+  db_auth:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auth_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - db_auth_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - backend
+
+  # Microservicio de Eventos (Go)
+  event-service:
+    build: ./mservicio_eventos
+    ports:
+      - "5001:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SERVER_HOST=0.0.0.0
+      - MONGODB_URI=mongodb://mongodb:27020/com600_t3_2_service_events
+      - MONGODB_DATABASE=com600_t3_2_service_events
+      - JWT_SECRET=clave-secreta-super-segura-con-mucha-y-mucha-seguridad
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # Base de datos para Eventos (MongoDB)
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - "27020:27020"
+    command: mongod --port 27020
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --port 27020 --quiet || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - backend
+
+  # Nginx como Gateway
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - auth-service
+      - event-service
+    networks:
+      - backend
+
+volumes:
+  db_auth_data:
+  mongodb-data:
+
+networks:
+  backend:
+    driver: bridge

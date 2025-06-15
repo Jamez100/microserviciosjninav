@@ -1,0 +1,17 @@
+{
+  "name": "especialidades-agenda-service",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "apollo-server": "3.12.0",
+    "axios": "^1.10.0",
+    "dotenv": "16.0.3",
+    "graphql": "16.8.0",
+    "jsonwebtoken": "9.0.0",
+    "mongoose": "7.3.4"
+  }
+}

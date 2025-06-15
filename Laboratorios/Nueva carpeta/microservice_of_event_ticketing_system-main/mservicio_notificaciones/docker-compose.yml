@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  notifications:
+    build: .
+    command: bash -c "bundle install && bundle exec rackup -p 3000 -o '0.0.0.0'"
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+    - SMTP_HOST=${SMTP_HOST}
+    - SMTP_PORT=${SMTP_PORT}
+    - SMTP_USER=${SMTP_USER}
+    - SMTP_PASSWORD=${SMTP_PASSWORD}
+    - EMAIL_FROM=${EMAIL_FROM}
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

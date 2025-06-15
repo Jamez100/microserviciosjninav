@@ -1,0 +1,18 @@
+source "https://rubygems.org"
+
+# Microservicio Sinatra
+gem "sinatra"
+gem "sinatra-contrib"  # Para JSON parsing y reload en desarrollo
+gem "rackup"           # Para ejecutar el servidor
+gem "puma"
+# Envío de emails
+gem "mail"
+gem "dotenv"         # Para cargar variables de entorno desde .env
+# MongoDB (si lo usas)
+gem "mongoid", "~> 8.0"
+
+# Desarrollo y Testing
+group :development, :test do
+  gem "debug", platforms: %i[ mri windows ]
+  gem "rake"           # Para tareas personalizadas (opcional)
+end
